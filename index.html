@@ -6,13 +6,15 @@
     <title>SOLLCHAT</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --container-bg: #1e293b;
+            --bg-color: #050505; /* Darker background for the real app */
+            --container-bg: #121212;
+            --card-bg: #1a1a1a;
             --text-color: #f8fafc;
-            --text-muted: #94a3b8;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
+            --text-muted: #888;
+            --primary: #ffffff;
+            --primary-hover: #e0e0e0;
             --error: #ef4444;
+            --border-color: #333;
         }
 
         body {
@@ -27,198 +29,316 @@
             min-height: 100vh;
         }
 
-        .container {
-            background-color: var(--container-bg);
+        /* --- Disguise View Styles --- */
+        .disguise-container {
+            background-color: #1e293b;
             padding: 2.5rem 2rem;
             border-radius: 1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
             text-align: center;
             width: 100%;
             max-width: 350px;
-            transition: all 0.3s ease;
         }
 
-        .header {
-            margin-bottom: 2rem;
+        .disguise-header { margin-bottom: 2rem; }
+        .disguise-lock-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+        .disguise-container h1 { font-size: 1.5rem; margin: 0; font-weight: 600; letter-spacing: 1px; }
+        .disguise-question-section { margin-bottom: 2rem; }
+        .disguise-math-question { font-size: 1.25rem; font-weight: 500; margin-bottom: 0.5rem; }
+        .disguise-instruction { color: #94a3b8; font-size: 0.875rem; margin-bottom: 1rem; }
+        
+        .disguise-input-group { position: relative; margin-bottom: 1rem; }
+        .disguise-input {
+            width: 100%; padding: 0.75rem; background-color: rgba(15, 23, 42, 0.5);
+            border: 1px solid #334155; border-radius: 0.5rem; color: #f8fafc;
+            font-size: 1rem; text-align: center; box-sizing: border-box; outline: none;
         }
-
-        .lock-icon {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
+        .disguise-input:focus { border-color: #3b82f6; }
+        
+        .disguise-button {
+            width: 100%; padding: 0.75rem; background-color: #3b82f6; color: white;
+            border: none; border-radius: 0.5rem; font-size: 1rem; font-weight: 500;
+            cursor: pointer; margin-bottom: 1.5rem;
         }
+        .disguise-button:hover { background-color: #2563eb; }
+        
+        .disguise-footer-link { color: #94a3b8; font-size: 0.875rem; text-decoration: none; cursor: pointer; }
+        .disguise-footer-link:hover { color: #f8fafc; }
+        .error-message { color: var(--error); font-size: 0.875rem; margin-top: 0.5rem; min-height: 1.2rem; }
 
-        h1 {
-            font-size: 1.5rem;
-            margin: 0;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        .question-section {
-            margin-bottom: 2rem;
-        }
-
-        .math-question {
-            font-size: 1.25rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        .instruction {
-            color: var(--text-muted);
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 1rem;
-        }
-
-        input {
+        /* --- Real App Styles --- */
+        #app-view {
+            display: none;
             width: 100%;
-            padding: 0.75rem;
-            background-color: rgba(15, 23, 42, 0.5);
-            border: 1px solid #334155;
-            border-radius: 0.5rem;
+            max-width: 400px;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+            min-height: 100vh;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-topbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 30px;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .help-icon {
+            position: absolute;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid var(--text-muted);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .app-title {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+        }
+
+        .welcome-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0;
+            max-width: 280px;
+            line-height: 1.4;
+        }
+
+        .login-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .input-wrapper {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .app-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
             color: var(--text-color);
             font-size: 1rem;
-            text-align: center;
-            box-sizing: border-box;
+            padding: 8px 0;
             outline: none;
             transition: border-color 0.2s;
         }
 
-        input:focus {
-            border-color: var(--primary);
+        .app-input:focus {
+            border-bottom-color: var(--text-color);
         }
 
-        /* Hide number arrows */
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+        .app-input::placeholder {
+            color: #444;
         }
 
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-bottom: 1.5rem;
-        }
-
-        button:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .footer-link {
+        .eye-icon {
+            position: absolute;
+            right: 0;
+            top: 28px;
             color: var(--text-muted);
-            font-size: 0.875rem;
-            text-decoration: none;
             cursor: pointer;
-            transition: color 0.2s;
+            font-size: 1.2rem;
         }
 
-        .footer-link:hover {
+        .forgot-link {
+            display: block;
+            text-align: right;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .forgot-link:hover {
             color: var(--text-color);
         }
 
-        .error-message {
-            color: var(--error);
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            min-height: 1.2rem;
+        .login-btn {
+            width: 100%;
+            background-color: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
 
-        .hidden {
-            display: none;
+        .login-btn:hover {
+            background-color: var(--primary-hover);
         }
 
-        /* Setup Modal/View */
-        #setup-view {
-            display: none;
-        }
-        
-        #app-view {
-            display: none;
+        .lock-back-btn {
+            width: 40px;
+            height: 40px;
+            background-color: #222;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: 1px solid #333;
+            margin-bottom: auto;
         }
 
-        .success-text {
-            color: #10b981;
+        .lock-back-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--text-muted);
+        }
+
+        .signup-footer {
+            margin-top: 40px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding-bottom: 20px;
+        }
+
+        .signup-link {
+            color: var(--text-color);
+            font-weight: 600;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
     <!-- Main Login / Disguise View -->
-    <div class="container" id="login-view">
-        <div class="header">
-            <div class="lock-icon">🔒</div>
+    <div class="disguise-container" id="login-view">
+        <div class="disguise-header">
+            <div class="disguise-lock-icon">🔒</div>
             <h1>SOLLCHAT</h1>
         </div>
 
-        <div class="question-section">
-            <div class="math-question">What is 74 - 52 ?</div>
-            <div class="instruction">Enter the answer</div>
+        <div class="disguise-question-section">
+            <div class="disguise-math-question">What is 74 - 52 ?</div>
+            <div class="disguise-instruction">Enter the answer</div>
             
-            <div class="input-group">
-                <!-- Using password type to mask input -->
-                <input type="password" id="answer-input" inputmode="numeric" placeholder="Answer..." autocomplete="off">
+            <div class="disguise-input-group">
+                <input type="password" class="disguise-input" id="answer-input" inputmode="numeric" placeholder="Answer..." autocomplete="off">
                 <div class="error-message" id="login-error"></div>
             </div>
             
-            <button onclick="checkPassword()">Submit</button>
+            <button class="disguise-button" onclick="checkPassword()">Submit</button>
         </div>
 
-        <div class="footer-link" onclick="showSetup()">
+        <div class="disguise-footer-link" onclick="showSetup()">
             First time? Set your password
         </div>
     </div>
 
     <!-- Setup View -->
-    <div class="container" id="setup-view">
-        <div class="header">
-            <div class="lock-icon">⚙️</div>
+    <div class="disguise-container" id="setup-view" style="display: none;">
+        <div class="disguise-header">
+            <div class="disguise-lock-icon">⚙️</div>
             <h1>Setup Password</h1>
         </div>
 
-        <div class="question-section">
-            <div class="math-question">Set Your Password</div>
-            <div class="instruction">Choose a 4 to 8 digit number</div>
+        <div class="disguise-question-section">
+            <div class="disguise-math-question">Set Your Password</div>
+            <div class="disguise-instruction">Choose a 4 to 8 digit number</div>
             
-            <div class="input-group">
-                <input type="password" id="setup-input" inputmode="numeric" placeholder="4-8 digits" autocomplete="off" maxlength="8">
+            <div class="disguise-input-group">
+                <input type="password" class="disguise-input" id="setup-input" inputmode="numeric" placeholder="4-8 digits" autocomplete="off" maxlength="8">
                 <div class="error-message" id="setup-error"></div>
             </div>
             
-            <button onclick="savePassword()">Save Password</button>
+            <button class="disguise-button" onclick="savePassword()">Save Password</button>
         </div>
 
-        <div class="footer-link" onclick="showLogin()">
+        <div class="disguise-footer-link" onclick="showLogin()">
             Back to login
         </div>
     </div>
 
-    <!-- App View (Unlocked) -->
-    <div class="container" id="app-view">
-        <div class="header">
-            <div class="lock-icon">🔓</div>
-            <h1 class="success-text">Unlocked!</h1>
+    <!-- Real App Login View -->
+    <div id="app-view">
+        <div class="app-topbar">
+            <div class="help-icon" onclick="placeholderAlert('Help / Info')">?</div>
+            <h1 class="app-title">SOLLCHAT</h1>
         </div>
-        <div class="question-section">
-            <div class="instruction">Welcome to SOLLCHAT.</div>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
-                Your secure app interface will go here.
-            </p>
+
+        <div class="welcome-section">
+            <h2 class="welcome-title">Welcome Back</h2>
+            <p class="welcome-subtitle">Enter your credentials to access the vault.</p>
         </div>
-        <button onclick="lockApp()" style="background-color: var(--container-bg); border: 1px solid #334155; color: var(--text-muted);">Lock App</button>
+
+        <div class="login-card">
+            <div class="input-wrapper">
+                <label class="input-label">USERNAME</label>
+                <input type="text" class="app-input" placeholder="e.g. Satoshi_N" id="real-user">
+            </div>
+
+            <div class="input-wrapper">
+                <label class="input-label">PASSWORD</label>
+                <input type="password" class="app-input" placeholder="••••••••" id="real-pass">
+                <div class="eye-icon" onclick="togglePassword()">👁️</div>
+            </div>
+
+            <div class="forgot-link" onclick="placeholderAlert('Forgot Password')">
+                Forgot password?
+            </div>
+
+            <button class="login-btn" onclick="realLogin()">Login</button>
+        </div>
+
+        <!-- Small lock back button -->
+        <div class="lock-back-btn" onclick="lockApp()" title="Lock App">
+            <svg viewBox="0 0 24 24">
+                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+            </svg>
+        </div>
+
+        <div class="signup-footer">
+            New here? <span class="signup-link" onclick="placeholderAlert('Sign Up')">Sign up</span>
+        </div>
     </div>
 
     <script>
@@ -231,6 +351,8 @@
         
         const loginError = document.getElementById('login-error');
         const setupError = document.getElementById('setup-error');
+        
+        const realPassInput = document.getElementById('real-pass');
 
         // Allow pressing Enter to submit
         answerInput.addEventListener('keypress', function(e) {
@@ -245,6 +367,7 @@
             loginView.style.display = 'none';
             appView.style.display = 'none';
             setupView.style.display = 'block';
+            document.body.style.backgroundColor = '#0f172a'; // Restore disguise bg
             setupInput.value = '';
             setupError.innerText = '';
             setupInput.focus();
@@ -254,6 +377,7 @@
             setupView.style.display = 'none';
             appView.style.display = 'none';
             loginView.style.display = 'block';
+            document.body.style.backgroundColor = '#0f172a'; // Restore disguise bg
             answerInput.value = '';
             loginError.innerText = '';
             answerInput.focus();
@@ -262,7 +386,8 @@
         function showApp() {
             loginView.style.display = 'none';
             setupView.style.display = 'none';
-            appView.style.display = 'block';
+            appView.style.display = 'flex'; // Use flex for layout
+            document.body.style.backgroundColor = '#050505'; // Darker bg for real app
         }
 
         function savePassword() {
@@ -309,7 +434,32 @@
         }
 
         function lockApp() {
+            // Clears any real login fields when locking
+            document.getElementById('real-user').value = '';
+            document.getElementById('real-pass').value = '';
             showLogin();
+        }
+
+        function togglePassword() {
+            if (realPassInput.type === "password") {
+                realPassInput.type = "text";
+            } else {
+                realPassInput.type = "password";
+            }
+        }
+
+        function placeholderAlert(pageName) {
+            alert(`Navigating to: ${pageName}\n(To be created later!)`);
+        }
+        
+        function realLogin() {
+            const user = document.getElementById('real-user').value;
+            const pass = document.getElementById('real-pass').value;
+            if(!user || !pass) {
+                alert('Please enter both username and password.');
+                return;
+            }
+            alert(`Logged in successfully as ${user}!\n(Chat interface to be built next)`);
         }
     </script>
 </body>
