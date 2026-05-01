@@ -3,61 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure DMs - Coming Soon</title>
+    <title>Simple Soulchat</title>
     <style>
+        :root {
+            --bg-color: #0f172a;
+            --container-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --error: #ef4444;
+        }
+
         body {
-            background-color: #000;
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
+            min-height: 100vh;
         }
+
         .container {
-            background-color: #121212;
-            padding: 40px;
-            border-radius: 12px;
-            border: 1px solid #333;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            max-width: 400px;
-            width: 90%;
+            background-color: var(--container-bg);
+            padding: 2.5rem 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+            transition: all 0.3s ease;
         }
+
+        .header {
+            margin-bottom: 2rem;
+        }
+
+        .lock-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
         h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            /* Instagram-like gradient text */
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
-        p {
-            color: #a8a8a8;
-            font-size: 16px;
-            line-height: 1.5;
+
+        .question-section {
+            margin-bottom: 2rem;
         }
-        .loader {
-            margin-top: 30px;
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid #333;
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
+
+        .math-question {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+
+        .instruction {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: rgba(15, 23, 42, 0.5);
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: var(--text-color);
+            font-size: 1rem;
+            text-align: center;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        /* Hide number arrows */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-bottom: 1.5rem;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .footer-link {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--text-color);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            min-height: 1.2rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Setup Modal/View */
+        #setup-view {
+            display: none;
+        }
+        
+        #app-view {
+            display: none;
+        }
+
+        .success-text {
+            color: #10b981;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Secure DMs</h1>
-        <p>Your new Instagram-style messaging app is currently under construction! 🚀</p>
-        <div class="loader"></div>
+
+    <!-- Main Login / Disguise View -->
+    <div class="container" id="login-view">
+        <div class="header">
+            <div class="lock-icon">🔒</div>
+            <h1>Simple Soulchat</h1>
+        </div>
+
+        <div class="question-section">
+            <div class="math-question">What is 74 - 52 ?</div>
+            <div class="instruction">Enter the answer</div>
+            
+            <div class="input-group">
+                <!-- Using password type to mask input -->
+                <input type="password" id="answer-input" inputmode="numeric" placeholder="Answer..." autocomplete="off">
+                <div class="error-message" id="login-error"></div>
+            </div>
+            
+            <button onclick="checkPassword()">Submit</button>
+        </div>
+
+        <div class="footer-link" onclick="showSetup()">
+            First time? Set your password
+        </div>
     </div>
+
+    <!-- Setup View -->
+    <div class="container" id="setup-view">
+        <div class="header">
+            <div class="lock-icon">⚙️</div>
+            <h1>Setup Password</h1>
+        </div>
+
+        <div class="question-section">
+            <div class="math-question">Set Your Password</div>
+            <div class="instruction">Choose a 4 to 8 digit number</div>
+            
+            <div class="input-group">
+                <input type="password" id="setup-input" inputmode="numeric" placeholder="4-8 digits" autocomplete="off" maxlength="8">
+                <div class="error-message" id="setup-error"></div>
+            </div>
+            
+            <button onclick="savePassword()">Save Password</button>
+        </div>
+
+        <div class="footer-link" onclick="showLogin()">
+            Back to login
+        </div>
+    </div>
+
+    <!-- App View (Unlocked) -->
+    <div class="container" id="app-view">
+        <div class="header">
+            <div class="lock-icon">🔓</div>
+            <h1 class="success-text">Unlocked!</h1>
+        </div>
+        <div class="question-section">
+            <div class="instruction">Welcome to Simple Soulchat.</div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+                Your secure app interface will go here.
+            </p>
+        </div>
+        <button onclick="lockApp()" style="background-color: var(--container-bg); border: 1px solid #334155; color: var(--text-muted);">Lock App</button>
+    </div>
+
+    <script>
+        const loginView = document.getElementById('login-view');
+        const setupView = document.getElementById('setup-view');
+        const appView = document.getElementById('app-view');
+        
+        const answerInput = document.getElementById('answer-input');
+        const setupInput = document.getElementById('setup-input');
+        
+        const loginError = document.getElementById('login-error');
+        const setupError = document.getElementById('setup-error');
+
+        // Allow pressing Enter to submit
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkPassword();
+        });
+        
+        setupInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') savePassword();
+        });
+
+        function showSetup() {
+            loginView.style.display = 'none';
+            appView.style.display = 'none';
+            setupView.style.display = 'block';
+            setupInput.value = '';
+            setupError.innerText = '';
+            setupInput.focus();
+        }
+
+        function showLogin() {
+            setupView.style.display = 'none';
+            appView.style.display = 'none';
+            loginView.style.display = 'block';
+            answerInput.value = '';
+            loginError.innerText = '';
+            answerInput.focus();
+        }
+
+        function showApp() {
+            loginView.style.display = 'none';
+            setupView.style.display = 'none';
+            appView.style.display = 'block';
+        }
+
+        function savePassword() {
+            const pwd = setupInput.value.trim();
+            
+            // Validate: Must be numbers only and between 4 and 8 digits
+            if (!/^\d{4,8}$/.test(pwd)) {
+                setupError.innerText = 'Must be 4 to 8 numbers.';
+                return;
+            }
+
+            // Save to localStorage
+            localStorage.setItem('soulchat_pwd', pwd);
+            
+            // Switch back to login
+            showLogin();
+            // Show a little success flash or just let them login
+            loginError.style.color = '#10b981'; // Green
+            loginError.innerText = 'Password saved! Try logging in.';
+            setTimeout(() => {
+                loginError.style.color = 'var(--error)';
+                if(loginError.innerText.includes('saved')) loginError.innerText = '';
+            }, 3000);
+        }
+
+        function checkPassword() {
+            const entered = answerInput.value.trim();
+            const stored = localStorage.getItem('soulchat_pwd');
+
+            if (!stored) {
+                loginError.innerText = 'No password set. Click "First time?" below.';
+                return;
+            }
+
+            if (entered === stored) {
+                // Success! Unlock app
+                showApp();
+            } else {
+                // To maintain disguise, we can either say "Incorrect" or "Wrong answer"
+                loginError.innerText = 'Incorrect answer.';
+                answerInput.value = '';
+                answerInput.focus();
+            }
+        }
+
+        function lockApp() {
+            showLogin();
+        }
+    </script>
 </body>
 </html>
